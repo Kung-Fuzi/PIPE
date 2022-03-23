@@ -63,10 +63,9 @@ def run(fhandle):
             yield line
     
     # Make TER and END lines if necessary
-    if not prev_line.startswith('TER'):
+    if not prev_line.startswith(structurerecords):
         prev_line = 'TER\n'
         yield prev_line
-    if not prev_line.startswith('END'):
         prev_line = 'END\n'
         yield prev_line
 
