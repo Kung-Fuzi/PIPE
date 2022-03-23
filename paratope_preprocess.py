@@ -90,3 +90,8 @@ def main():
     with open(f'{fn}_residues.txt','w') as newfile:
         for res in para:
             newfile.write(f'{res}\n')
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()
