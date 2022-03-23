@@ -44,15 +44,23 @@ def run(fhandle):
     """Return a PIPE-formatted PDB file"""
     
     # Delete all lines except ATOM/HETATM
-    records = ('ATOM','HETATM','TER','END')
+    modelrecords = ('MODEL','ENDMDL')
+    structurerecords = ('TER','END')
+    atomrecords = ('ATOM','HETATM')
     
     for line in fhandle:
-        if line.startswith(records):
-            if line.startswith('ENDMDL'):
-                continue
-            else:
-                prev_line = line
-                yield line
+        if line.startswith(modelrecords):
+            continue
+        elif line.startswith(structurerecords):
+            if line.startswith('TER'):
+                prev_line = 'TER\n'
+                yield prev_line
+            elif line.startswith('END'):
+                prev_line = 'END\n'
+                yield prev_line
+        elif line.startswith(atomrecords):
+            prev_line = line
+            yield line
     
     # Make TER and END lines if necessary
     if not prev_line.startswith('TER'):
