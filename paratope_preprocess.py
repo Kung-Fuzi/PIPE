@@ -79,7 +79,7 @@ def run(inputfile):
     recparatopesort = []
     
     for residue in recparatope:
-        resseq = residue.split('.')[1]
+        resseq = int(residue.split('.')[1])
         recparatopeseqs.append(resseq)
     
     recparatopeseqscopy = recparatopeseqs.copy()
