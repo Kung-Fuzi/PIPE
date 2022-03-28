@@ -51,65 +51,19 @@ def run(inputfile):
     # Return structure of PDB file
     recstructure = parser.get_structure('receptor',inputfile)
     
-    ipatch = []
     recparatope = []
     
     # Find all residues within specified B-factor cutoff of i-Patch
     for atom in recstructure.get_atoms():
         if atom.get_bfactor() >= 10: # PIPE i-Patch cutoff
-            residue = atom.get_parent()
-            if residue not in ipatch:
-                ipatch.append(residue)
-                
-    for residue1 in recstructure.get_residues():
-        for residue2 in ipatch:
-            if residue1 != residue2:
-                try:
-                    if (residue1['CA'] - residue2['CA']) < 10: # PIPE expand cutoff
-                        resname = residue1.get_resname()
-                        reschain = residue1.get_full_id()[2]
-                        resseq = residue1.get_full_id()[3][1]
-                        residue = f'{resname}.{reschain}.{resseq}'
-                        if residue not in recparatope:
-                            recparatope.append(residue)
-                except KeyError:
-                    continue
-                
-    # Sort paratope residues
-    chains = []
-    recparatopeseqs = []
-    recparatopesort = []
-    recparatopesorts = []
-    recparatopesorted = []
+            resname = atom.get_parent().get_resname()
+            reschain = atom.get_parent().get_full_id()[2]
+            resseq = atom.get_parent().get_full_id()[3][1]
+            residue = f'{resname}.{reschain}.{resseq}'
+            if residue not in recparatope:
+                recparatope.append(residue)
     
-    for residue in recparatope:
-        resseq = int(residue.split('.')[2])
-        recparatopeseqs.append(resseq)
-    
-    recparatopeseqscopy = recparatopeseqs.copy()
-    recparatopeseqscopy.sort()
-    
-    for resseq in recparatopeseqscopy:
-        recparatopesort.append(recparatope[recparatopeseqs.index(resseq)])
-    
-    for residue in recparatopesort:
-        chain = residue.split('.')[1]
-        if chain not in chains:
-            chains.append(chain)
-            
-    for chain in chains:
-        recparatopechainres = []
-        for residue in recparatopesort:
-            residuechain = residue.split('.')[1]
-            if chain == residuechain:
-                recparatopechainres.append(residue)
-        recparatopesorts.append(recparatopechainres)
-        
-    for residuechain in recparatopesorts:
-        for residue in residuechain:
-            recparatopesorted.append(residue)
-    
-    return recparatopesorted
+    return recparatope
 
 
 def main():
