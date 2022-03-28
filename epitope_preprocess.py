@@ -6,7 +6,7 @@ Created by @Kung-Fuzi
 
 Epitope pre-processing step for PIPE.
 This script takes as input a SAbPred EpiPred output PDB file and outputs a 
-text file containing the predicted epitope residues as resname.resseq.
+text file containing the predicted epitope residues as resname.reschain.resseq.
 
 Usage:
     python3.8 epitope_preprocess.py <pdb file>
@@ -57,8 +57,9 @@ def run(inputfile):
     for atom in ligstructure.get_atoms():
         if atom.get_bfactor() == 100: # EpiPred sets epitope residue B-factor to 100
             resname = atom.get_parent().get_resname()
+            reschain = atom.get_parent().get_parent()
             resseq = atom.get_parent().get_full_id()[3][1]
-            residue = f'{resname}.{resseq}'
+            residue = f'{resname}.{reschain}.{resseq}'
             if residue not in ligepitope:
                 ligepitope.append(residue)
                 

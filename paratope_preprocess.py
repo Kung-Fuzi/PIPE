@@ -6,7 +6,7 @@ Created by @Kung-Fuzi
 
 Paratope pre-processing step for PIPE.
 This script takes as an input a SAbPred i-Patch output PDB file and outputs a 
-text file containing the predicted paratope residues as resname.resseq.
+text file containing the predicted paratope residues as resname.reschain.resseq.
 
 Usage:
     python3.8 paratope_preprocess.py <pdb file>
@@ -67,19 +67,23 @@ def run(inputfile):
                 try:
                     if (residue1['CA'] - residue2['CA']) < 10: # PIPE expand cutoff
                         resname = residue1.get_resname()
+                        reschain = residue1.get_parent()
                         resseq = residue1.get_full_id()[3][1]
-                        residue = f'{resname}.{resseq}'
+                        residue = f'{resname}.{reschain}.{resseq}'
                         if residue not in recparatope:
                             recparatope.append(residue)
                 except KeyError:
                     continue
                 
     # Sort paratope residues
+    chains = []
     recparatopeseqs = []
     recparatopesort = []
+    recparatopesorts = []
+    recparatopesorted = []
     
     for residue in recparatope:
-        resseq = int(residue.split('.')[1])
+        resseq = int(residue.split('.')[2])
         recparatopeseqs.append(resseq)
     
     recparatopeseqscopy = recparatopeseqs.copy()
@@ -88,7 +92,24 @@ def run(inputfile):
     for resseq in recparatopeseqscopy:
         recparatopesort.append(recparatope[recparatopeseqs.index(resseq)])
     
-    return recparatopesort
+    for residue in recparatopesort:
+        chain = residue.split('.')[1]
+        if chain not in chains:
+            chains.append(chain)
+            
+    for chain in chains:
+        recparatopechainres = []
+        for residue in recparatopesort:
+            residuechain = residue.split('.')[1]
+            if chain == residuechain:
+                recparatopechainres.append()
+        recparatopesorts.append(recparatopechainres)
+        
+    for residuechain in recparatopesorts:
+        for residue in residuechain:
+            recparatopesorted.append(residue)
+    
+    return recparatopesorted
 
 
 def main():
