@@ -57,7 +57,7 @@ def run(inputfile):
     for atom in ligstructure.get_atoms():
         if atom.get_bfactor() == 100: # EpiPred sets epitope residue B-factor to 100
             resname = atom.get_parent().get_resname()
-            reschain = atom.get_parent().get_parent()
+            reschain = atom.get_parent().get_full_id()[2]
             resseq = atom.get_parent().get_full_id()[3][1]
             residue = f'{resname}.{reschain}.{resseq}'
             if residue not in ligepitope:

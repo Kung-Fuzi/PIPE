@@ -67,7 +67,7 @@ def run(inputfile):
                 try:
                     if (residue1['CA'] - residue2['CA']) < 10: # PIPE expand cutoff
                         resname = residue1.get_resname()
-                        reschain = residue1.get_parent()
+                        reschain = residue1.get_full_id()[2]
                         resseq = residue1.get_full_id()[3][1]
                         residue = f'{resname}.{reschain}.{resseq}'
                         if residue not in recparatope:
@@ -102,7 +102,7 @@ def run(inputfile):
         for residue in recparatopesort:
             residuechain = residue.split('.')[1]
             if chain == residuechain:
-                recparatopechainres.append()
+                recparatopechainres.append(residue)
         recparatopesorts.append(recparatopechainres)
         
     for residuechain in recparatopesorts:
