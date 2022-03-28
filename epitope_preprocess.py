@@ -6,14 +6,13 @@ Created by @Kung-Fuzi
 
 Epitope pre-processing step for PIPE.
 This script takes as input a SAbPred EpiPred output PDB file and outputs a 
-text file containing the predicted epitope residues. Please make sure the script 
-is on the same path as your PDB file.
+text file containing the predicted epitope residues as resname.resseq.
 
 Usage:
-    python epitope_preprocess.py <pdb file>
+    python3.8 epitope_preprocess.py <pdb file>
 
 Example:
-    python epitope_preprocess.py LILRB1_epi1.pdb
+    python3.8 epitope_preprocess.py LILRB1_epi1.pdb
 """
 
 

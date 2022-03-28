@@ -6,14 +6,13 @@ Created by @Kung-Fuzi
 
 Paratope pre-processing step for PIPE.
 This script takes as an input a SAbPred i-Patch output PDB file and outputs a 
-text file containing the predicted paratope residues. Please make sure the script 
-is on the same path as your PDB file.
+text file containing the predicted paratope residues as resname.resseq.
 
 Usage:
-    python paratope_preprocess.py <pdb file>
+    python3.8 paratope_preprocess.py <pdb file>
 
 Example:
-    python paratope_preprocess.py 10329_paratope.pdb
+    python3.8 paratope_preprocess.py 10329_paratope.pdb
 """
 
 
@@ -75,7 +74,21 @@ def run(inputfile):
                 except KeyError:
                     continue
                 
-    return recparatope
+    # Sort paratope residues
+    recparatopeseqs = []
+    recparatopesort = []
+    
+    for residue in recparatope:
+        resseq = residue.split('.')[1]
+        recparatopeseqs.append(resseq)
+    
+    recparatopeseqscopy = recparatopeseqs.copy()
+    recparatopeseqscopy.sort()
+    
+    for resseq in recparatopeseqscopy:
+        recparatopesort.append(recparatope[recparatopeseqs.index(resseq)])
+    
+    return recparatopesort
 
 
 def main():

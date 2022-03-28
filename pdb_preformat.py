@@ -5,14 +5,13 @@ Created on Wed Mar 23 11:54:24 2022
 Created by @Kung-Fuzi
 
 PDB pre-preformatting step for PIPE.
-This script takes as input a PDB file and outputs a PIPE-formatted PDB file. 
-Please make sure the script is on the same path as your PDB file.
+This script takes as input a PDB file and outputs a PIPE-formatted PDB file.
 
 Usage:
-    python pdb_preformat.py <pdb file>
+    python3.8 pdb_preformat.py <pdb file>
 
 Example:
-    python pdb_preformat.py 10329_paratope.pdb
+    python3.8 pdb_preformat.py 10329_paratope.pdb
 """
 
 
