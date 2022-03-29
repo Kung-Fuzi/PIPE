@@ -82,7 +82,7 @@ def main():
     # Write list to file
     newfn = os.path.splitext(pdbfn)[0]
     
-    with open(f'{newfn}_format.pdb','w') as newfile:
+    with open(f'{newfn}_preformat.pdb','w') as newfile:
         for line in newfh:
             newfile.write(line)
     
