@@ -56,12 +56,8 @@ def run(inputfile):
     # Find all residues within specified B-factor cutoff of EpiPred
     for atom in ligstructure.get_atoms():
         if atom.get_bfactor() == 100: # EpiPred sets epitope residue B-factor to 100
-            resname = atom.get_parent().get_resname()
-            reschain = atom.get_parent().get_full_id()[2]
-            resseq = atom.get_parent().get_full_id()[3][1]
-            residue = f'{resname}.{reschain}.{resseq}'
-            if residue not in ligepitope:
-                ligepitope.append(residue)
+            if atom.get_parent() not in ligepitope:
+                ligepitope.append(atom.get_parent())
                 
     return ligepitope
 
@@ -77,7 +73,10 @@ def main():
     fn = os.path.splitext(ligpdb)[0]
     with open(f'{fn}_residues.txt','w') as newfile:
         for res in epi:
-            newfile.write(f'{res}\n')
+            resname = res.get_resname()
+            reschain = res.get_full_id()[2]
+            resseq = res.get_full_id()[3][1]
+            newfile.write(f'{resname}.{reschain}.{resseq}\n')
     sys.exit(0)
 
 

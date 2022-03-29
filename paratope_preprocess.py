@@ -59,19 +59,11 @@ def run(inputfile):
     # Find all residues within specified B-factor cutoff of i-Patch
     for atom in recstructure.get_atoms():
         if atom.get_bfactor() >= 10: # PIPE i-Patch cutoff
-            resname = atom.get_parent().get_resname()
-            reschain = atom.get_parent().get_full_id()[2]
-            resseq = atom.get_parent().get_full_id()[3][1]
-            residue = f'{resname}.{reschain}.{resseq}'
-            if residue not in recparatope:
-                recparatope.append(residue)
+            if atom.get_parent() not in recparatope:
+                recparatope.append(atom.get_parent())
     
     # Find residues to block
-    for residue in recstructure.get_residues():
-        resname = residue.get_resname()
-        reschain = residue.get_full_id()[2]
-        resseq = residue.get_full_id()[3][1]
-        residue1 = f'{resname}.{reschain}.{resseq}'
+    for residue1 in recstructure.get_residues():
         for residue2 in recparatope:
             if residue1 != residue2:
                 try: # Find all residues within 20A of each paratope residue
@@ -82,15 +74,11 @@ def run(inputfile):
                     continue
     
     for residue in recstructure.get_residues():
-        resname = residue.get_resname()
-        reschain = residue.get_full_id()[2]
-        resseq = residue.get_full_id()[3][1]
-        residueblk = f'{resname}.{reschain}.{resseq}'
-        if residueblk not in recsafe:
-            if reschain == 'B':
-                recblkB.append(residueblk)
-            elif reschain == 'C':
-                recblkC.append(residueblk)
+        if residue not in recsafe:
+            if residue.get_full_id()[2] == 'B':
+                recblkB.append(residue)
+            elif residue.get_full_id()[2] == 'C':
+                recblkC.append(residue)
     
     return recparatope, recblkB, recblkC
 
@@ -106,13 +94,22 @@ def main():
     fn = os.path.splitext(recpdb)[0]
     with open(f'{fn}_residues.txt','w') as newfile1:
         for res in para:
-            newfile1.write(f'{res}\n')
+            resname = res.get_resname()
+            reschain = res.get_full_id()[2]
+            resseq = res.get_full_id()[3][1]
+            newfile1.write(f'{resname}.{reschain}.{resseq}\n')
     with open(f'{fn}_blockedB.txt','w') as newfile2:
         for res in blkb:
-            newfile2.write(f'{res}\n')
+            resname = res.get_resname()
+            reschain = res.get_full_id()[2]
+            resseq = res.get_full_id()[3][1]
+            newfile2.write(f'{resname}.{reschain}.{resseq}\n')
     with open(f'{fn}_blockedC.txt','w') as newfile3:
         for res in blkc:
-            newfile3.write(f'{res}\n')
+            resname = res.get_resname()
+            reschain = res.get_full_id()[2]
+            resseq = res.get_full_id()[3][1]
+            newfile3.write(f'{resname}.{reschain}.{resseq}\n')
     sys.exit(0)
 
 
