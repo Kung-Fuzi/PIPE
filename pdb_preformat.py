@@ -4,7 +4,7 @@
 Created on Wed Mar 23 11:54:24 2022
 Created by @Kung-Fuzi
 
-PDB pre-preformatting step for PIPE.
+PDB pre-formatting step for PIPE.
 This script takes as input a PDB file and outputs a PIPE-formatted PDB file.
 
 Usage:
