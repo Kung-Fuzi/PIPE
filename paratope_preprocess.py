@@ -52,6 +52,9 @@ def run(inputfile):
     recstructure = parser.get_structure('receptor',inputfile)
     
     recparatope = []
+    recsafe = []
+    recblkB = []
+    recblkC = []
     
     # Find all residues within specified B-factor cutoff of i-Patch
     for atom in recstructure.get_atoms():
@@ -63,7 +66,33 @@ def run(inputfile):
             if residue not in recparatope:
                 recparatope.append(residue)
     
-    return recparatope
+    # Find residues to block
+    for residue in recstructure.get_residues():
+        resname = residue.get_resname()
+        reschain = residue.get_full_id()[2]
+        resseq = residue.get_full_id()[3][1]
+        residue1 = f'{resname}.{reschain}.{resseq}'
+        for residue2 in recparatope:
+            if residue1 != residue2:
+                try: # Find all residues within 20A of each paratope residue
+                    if (residue1['CA'] - residue2['CA']) < 20:
+                        if residue1 not in recsafe:
+                            recsafe.append(residue1)
+                except KeyError:
+                    continue
+    
+    for residue in recstructure.get_residues():
+        resname = residue.get_resname()
+        reschain = residue.get_full_id()[2]
+        resseq = residue.get_full_id()[3][1]
+        residueblk = f'{resname}.{reschain}.{resseq}'
+        if residueblk not in recsafe:
+            if reschain == 'B':
+                recblkB.append(residueblk)
+            elif reschain == 'C':
+                recblkC.append(residueblk)
+    
+    return recparatope, recblkB, recblkC
 
 
 def main():
@@ -71,13 +100,19 @@ def main():
     recpdb = check_input(sys.argv[1:])
     
     # Run epitope pre-processing step on input PDB
-    para = run(recpdb)
+    para, blkb, blkc = run(recpdb)
     
     # Write list to file
     fn = os.path.splitext(recpdb)[0]
-    with open(f'{fn}_residues.txt','w') as newfile:
+    with open(f'{fn}_residues.txt','w') as newfile1:
         for res in para:
-            newfile.write(f'{res}\n')
+            newfile1.write(f'{res}\n')
+    with open(f'{fn}_blockedB.txt','w') as newfile2:
+        for res in blkb:
+            newfile2.write(f'{res}\n')
+    with open(f'{fn}_blockedC.txt','w') as newfile3:
+        for res in blkc:
+            newfile3.write(f'{res}\n')
     sys.exit(0)
 
 
