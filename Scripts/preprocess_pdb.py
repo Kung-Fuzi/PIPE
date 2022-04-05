@@ -72,14 +72,18 @@ def main():
     pdbfn = check_input(sys.argv[1:])
     
     # Run epitope pre-processing step on input PDB
-    with open(pdbfn,'r') as oldfile:
-        pdbfh = run(oldfile)
+    inputpdb = open(pdbfn,'r')
+    pdbfh = run(inputpdb)
     
-    # Write list to file
-    with open(pdbfn,'w') as newfile:
+    # Write to file
+    pdbdir = os.path.dirname(pdbfn)
+    pdbbase = os.path.basename(pdbfn)
+    newfn = os.path.join(pdbdir,f'new_{pdbbase}')
+    with open(newfn,'w') as outputpdb:
         for line in pdbfh:
-            newfile.write(line)
+            outputpdb.write(line)
     
+    inputpdb.close()
     sys.exit(0)
 
 
