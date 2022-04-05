@@ -5,14 +5,15 @@ Created on Thu Mar 17 13:27:04 2022
 Created by @Kung-Fuzi
 
 Paratope pre-processing step for PIPE.
-This script takes as an input a SAbPred i-Patch output PDB file and outputs a 
-text file containing the predicted paratope residues as resname.reschain.resseq.
+This script takes as an input a preprocessed SAbPred i-Patch output PDB file 
+and outputs a text file containing the predicted paratope residues as 
+resname.reschain.resseq.
 
 Usage:
-    python3.8 paratope_preprocess.py <pdb file>
+    python3.8 preprocess_paratope.py <pdb file>
 
 Example:
-    python3.8 paratope_preprocess.py 10329_paratope.pdb
+    python3.8 preprocess_paratope.py 10329_paratope.pdb
 """
 
 
@@ -32,14 +33,14 @@ def check_input(args):
             sys.stderr.write(__doc__)
             sys.exit(1)
             
-        f = args[0] # Input file
+        fn = args[0] # Input file
         
     # No input file
     else:
         sys.stderr.write(__doc__)
         sys.exit(1)
         
-    return f
+    return fn
 
 
 def run(inputfile):
@@ -53,8 +54,7 @@ def run(inputfile):
     
     recparatope = []
     recsafe = []
-    recblkB = []
-    recblkC = []
+    recblock = []
     
     # Find all residues within specified B-factor cutoff of i-Patch
     for atom in recstructure.get_atoms():
@@ -75,12 +75,9 @@ def run(inputfile):
     
     for residue in recstructure.get_residues():
         if residue not in recsafe:
-            if residue.get_full_id()[2] == 'B':
-                recblkB.append(residue)
-            elif residue.get_full_id()[2] == 'C':
-                recblkC.append(residue)
+            recblock.append(residue)
     
-    return recparatope, recblkB, recblkC
+    return recparatope, recblock
 
 
 def main():
@@ -88,7 +85,7 @@ def main():
     recpdb = check_input(sys.argv[1:])
     
     # Run epitope pre-processing step on input PDB
-    para, blkb, blkc = run(recpdb)
+    para, block = run(recpdb)
     
     # Write list to file
     fn = os.path.splitext(recpdb)[0]
@@ -98,18 +95,12 @@ def main():
             reschain = res.get_full_id()[2]
             resseq = res.get_full_id()[3][1]
             newfile1.write(f'{resname}.{reschain}.{resseq}\n')
-    with open(f'{fn}_blockedB.txt','w') as newfile2:
-        for res in blkb:
+    with open(f'{fn}_blockedresidues.txt','w') as newfile2:
+        for res in block:
             resname = res.get_resname()
             reschain = res.get_full_id()[2]
             resseq = res.get_full_id()[3][1]
             newfile2.write(f'{resname}.{reschain}.{resseq}\n')
-    with open(f'{fn}_blockedC.txt','w') as newfile3:
-        for res in blkc:
-            resname = res.get_resname()
-            reschain = res.get_full_id()[2]
-            resseq = res.get_full_id()[3][1]
-            newfile3.write(f'{resname}.{reschain}.{resseq}\n')
     sys.exit(0)
 
 

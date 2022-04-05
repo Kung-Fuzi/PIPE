@@ -5,14 +5,15 @@ Created on Thu Mar 17 13:27:04 2022
 Created by @Kung-Fuzi
 
 Epitope pre-processing step for PIPE.
-This script takes as input a SAbPred EpiPred output PDB file and outputs a 
-text file containing the predicted epitope residues as resname.reschain.resseq.
+This script takes as input a preprocessed SAbPred EpiPred output PDB file 
+and outputs a text file containing the predicted epitope residues as 
+resname.reschain.resseq.
 
 Usage:
-    python3.8 epitope_preprocess.py <pdb file>
+    python3.8 preprocess_epitope.py <pdb file>
 
 Example:
-    python3.8 epitope_preprocess.py LILRB1_epi1.pdb
+    python3.8 preprocess_epitope.py LILRB1_epi1.pdb
 """
 
 
@@ -32,14 +33,14 @@ def check_input(args):
             sys.stderr.write(__doc__)
             sys.exit(1)
             
-        f = args[0] # Input file
+        fn = args[0] # Input file
         
     # No input file
     else:
         sys.stderr.write(__doc__)
         sys.exit(1)
         
-    return f
+    return fn
 
 
 def run(inputfile):
