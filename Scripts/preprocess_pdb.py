@@ -5,13 +5,13 @@ Created on Wed Mar 23 11:54:24 2022
 Created by @Kung-Fuzi
 
 PDB pre-processing step for PIPE.
-This script takes as input a PDB file and outputs a minimal PDB file.
+This script takes as input a PDB file and removes non-ATOM/HETATM info.
 
 Usage:
     python3.8 preprocess_pdb.py <pdb file>
 
 Example:
-    python3.8 preprocess_pdb.py 10329_paratope.pdb
+    python3.8 preprocess_pdb.py 10329_paratope.pdb > temp.pdb
 """
 
 
@@ -75,14 +75,22 @@ def main():
     inputpdb = open(pdbfn,'r')
     pdbfh = run(inputpdb)
     
-    # Write to file
-    pdbdir = os.path.dirname(pdbfn)
-    pdbbase = os.path.basename(pdbfn)
-    newfn = os.path.join(pdbdir,f'new_{pdbbase}')
-    with open(newfn,'w') as outputpdb:
-        for line in pdbfh:
-            outputpdb.write(line)
+    try:
+        _buffer = []
+        _buffer_size = 5000  # write N lines at a time
+        for lineno, line in enumerate(pdbfh):
+            if not (lineno % _buffer_size):
+                sys.stdout.write(''.join(_buffer))
+                _buffer = []
+            _buffer.append(line)
+
+        sys.stdout.write(''.join(_buffer))
+        sys.stdout.flush()
+    except IOError:
+        # This is here to catch Broken pipes
+        pass
     
+    # Close file and exit
     inputpdb.close()
     sys.exit(0)
 
