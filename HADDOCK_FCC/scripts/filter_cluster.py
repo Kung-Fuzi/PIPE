@@ -4,13 +4,16 @@ Created on Fri Apr  8 11:05:34 2022
 Created by @Kung-Fuzi
 
 Cluter filtering step for PIPE.
-This script takes as input a PDB file and removes non-ATOM/HETATM info.
+This script takes as input predicted epitope/paratope text files and a HADDOCK-FCC 
+cluster file and output a filtered cluster file
 
 Usage:
-    python3.8 preprocess_pdb.py <pdb file>
+    python3.8 filter_cluster.py <epitope1residues.txt> <epitope2residues.txt> 
+    <epitope3residues.txt> <paratoperesidues.txt> <namedclusters.txt>
 
 Example:
-    python3.8 preprocess_pdb.py 10329_paratope.pdb > temp.pdb
+    python3.8 filter_cluster.py LILRB1_epi1_residues.txt LILRB1_epi2_residues.txt 
+    LILRB1_epi3_residues.txt 10329_paratope_residues.txt namedclusters.txt
 """
 
 import os
