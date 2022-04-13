@@ -122,8 +122,8 @@ def filter_clusters(clusters,cutoff,epitopes,paratope,fcc):
         commoncontacts = [res for res in clusterparatope if res in predictedparatope]
         clusterparatopefcc.append(len(commoncontacts)/len(paratope))
         
-        # 
-        if clusterparatopefcc > fcc:
+        # Filter clusters based on FCC
+        if clusterparatopefcc[0] > fcc:
             if clusterepitopefcc[0] > fcc or clusterepitopefcc[1] > fcc or clusterepitopefcc[2] > fcc:
                 filteredclusters.append(cluster)
     
